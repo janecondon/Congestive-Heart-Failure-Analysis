@@ -65,7 +65,7 @@ There is a weak positive relationship between poverty and crude mortality rate. 
 
 ### Education Level vs. Crude Mortality Rate
 
-  <img width="600" height="400" src="Plots\Bachelors_Plot.png"><img width="600" height="400" src="Plots\HS_Plot.png">
+  <img width="400" height="400" src="Plots\Bachelors_Plot.png"><img width="400" height="400" src="Plots\HS_Plot.png">
 
 There is a negative relationship between education level and crude mortality rate. Counties with a high percentage of people with a Bachelor’s degree or higher generally have a lower crude mortality rate, and counties with a high percentage of people without a high school diploma have a higher crude mortality rate. This means that people living in more educated counties are less likely to die from congestive heart failure.
 
@@ -79,7 +79,7 @@ There is clearly a large difference in the crude mortality rate for urban and ru
   
 ## Linear Regression Model
 
- <img width="600" height="400" src="Plots\Linear_Regression.png">
+ <img width="800" height="400" src="Plots\Linear_Regression.png">
 
 Based on this model: 
 
