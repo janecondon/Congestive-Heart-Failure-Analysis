@@ -3,7 +3,7 @@
 
 ## Introduction
 
-In this project, I analyzed county-level data from various sources, including the CDC's WONDER database, U.S. Census Bureau, Feeding America, and the U.S. Department of Agriculture. The purpose of this project is to answer the following question: Is there a relationship between the congestive heart failure crude mortality rate and socioeconomic factors (median household income, food insecurity, etc.) and urbanization level of a county?
+In this project, I analyzed county-level data from various sources, including the CDC's WONDER database, U.S. Census Bureau, Feeding America, and the U.S. Department of Agriculture. The purpose of this project is to answer the following question: Is there a relationship between the Congestive Heart Failure crude mortality rate and socioeconomic factors (median household income, food insecurity, etc.) and urbanization level of a county?
  
 
 ## Data
