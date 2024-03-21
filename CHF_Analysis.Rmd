@@ -1,0 +1,283 @@
+---
+title: "Congestive Heart Failure Analysis"
+author: "Jane Condon"
+date: '`r Sys.Date()`'
+output: pdf_document
+    
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(tidy.opts = list(width.cutoff = 60), tidy = TRUE)
+```
+
+# Is There a Connection Between Congestive Heart Failure and Socioeconomic Status (and/or) Urbanization Level?
+
+
+## Loading packages
+
+```{r, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(ggplot2)
+library(sjPlot)
+library(formatR)
+```
+
+
+## Importing Data
+
+```{r, message = FALSE, warning = FALSE}
+wonder_data <- read_csv("CHF Data.csv")
+education_data <- read_csv("Education Data.csv")
+poverty_data <- read_csv("Poverty and Household Income Data.csv")
+food_insecurity_data <- read_csv("Food Insecurity Data.csv")
+unemployment_data <- read_csv("Unemployment Data.csv")
+```
+
+
+## Merging Data
+
+
+```{r, warning = FALSE}
+full_data <- wonder_data %>%
+  inner_join(education_data
+, by=c('County','State')) %>%  inner_join(poverty_data, by=c('County','State')) %>%
+  inner_join(food_insecurity_data, by = c('County','State')) %>%
+  inner_join(unemployment_data, by = c('County','State'))
+```
+
+
+## Cleaning the Data
+
+
+### Changing Some Variable Names For Simplicity
+
+```{r}
+colnames(full_data)[colnames(full_data) == "Crude Rate"] <- "rate"
+colnames(full_data)[colnames(full_data) == "Percent of adults with less than a high school diploma, 2008-12"] <- "no_hs"
+colnames(full_data)[colnames(full_data) == "Percent of adults with a high school diploma only, 2008-12"] <- "hs_only"
+colnames(full_data)[colnames(full_data) == "Percent of adults with a bachelor's degree or higher, 2008-12"] <- "bs_higher"
+colnames(full_data)[colnames(full_data) == "Poverty Percent, All Ages"] <- "poverty"
+colnames(full_data)[colnames(full_data) == "Median Household Income"] <- "income"
+colnames(full_data)[colnames(full_data) == "2014 Food Insecurity Rate"] <- "food_insecure"
+colnames(full_data)[colnames(full_data) == "Rural_Urban_Continuum_Code_2013"] <- "urbanization"
+
+```
+
+
+
+### Only Keeping Necessary Variables In the Dataframe
+
+
+```{r}
+df <- full_data[c("County","State","Deaths","Population","rate","no_hs","hs_only","bs_higher","poverty","income",
+                  "food_insecure","urbanization")]
+```
+
+
+
+### Removing Missing Values and Fixing Data Types
+
+```{r}
+#Removing missing values
+
+df <- na.omit(df)
+
+#Removing percent sign from food_insecure
+
+df$food_insecure <- as.numeric(gsub("[\\%,]", "", df$food_insecure))
+
+#Removing commas from income
+
+df$income <- as.numeric(gsub(",", "", df$income))
+
+#Changing poverty to a numeric
+
+df$poverty <- as.numeric(df$poverty)
+
+#Changing urbanization to a factor
+
+df$urbanization <- as.factor(df$urbanization)
+
+```
+
+
+
+## Exploratory Data Analysis and Data Visualization
+
+
+### Looking At the Summary Statistics For Crude Mortality Rate and Looking For Outliers
+
+
+```{r}
+summary(df$rate)
+summary(df$Deaths)
+```
+
+
+### Removing Large Outliers Using IQR*1.5
+
+```{r}
+quartiles <- quantile(df$rate, probs=c(.25, .75), na.rm = FALSE)
+IQR <- IQR(df$rate)
+
+lower <- quartiles[1] - 1.5*IQR
+upper <- quartiles[2] + 1.5*IQR 
+
+df_new <- subset(df, df$rate > lower & df$rate < upper)
+
+```
+
+
+### Attaching New Dataframe Without Outliers
+
+
+```{r}
+attach(df_new)
+```
+
+
+
+### New Summary Statistics After Removing Outliers
+
+
+```{r}
+summary(rate)
+```
+
+
+
+## Data Visualization
+
+### Crude Mortality Rate vs. Household Income
+
+
+```{r}
+ggplot(df_new, aes(x = income, y = rate)) +
+    geom_point(color = "rosybrown1") + geom_smooth(method = "lm",color="#cc4b65") +
+        labs(title = "Median Household Income vs. Congestive Heart Failure",
+             x = "Median Household Income ($)",
+             y = "Crude Mortality Rate (per 100,000)") + theme_bw()
+```
+
+
+
+```{r}
+cor(income,rate)
+```
+
+
+
+### Crude Mortality Rate vs Food Insecurity
+
+
+```{r}
+ggplot(df_new, aes(x = food_insecure, y = rate)) +
+    geom_point(color = "#CC79A7") + geom_smooth(method = "lm",color="#c41b3d") +
+        labs(title = "Food Insecurity vs. Congestive Heart Failure",
+             x = "% of People Facing Food Insecurity",
+             y = "Crude Mortality Rate (per 100,000)") + theme_bw()
+```
+
+
+
+```{r}
+cor(food_insecure,rate)
+```
+
+
+
+### Crude Mortality Rate vs. Education Level
+
+
+```{r}
+ggplot(df_new, aes(x = bs_higher, y = rate)) +
+    geom_point(color = "#edb4e4") + geom_smooth(method = "lm",color="#eb5081") +
+        labs(title = "Education Level vs. Congestive Heart Failure (Bachelor's or Higher)",
+             x = "% of People With a Bachelor's Degree or Higher",
+             y = "Crude Mortality Rate (per 100,000)") + theme_bw()
+```
+
+
+
+```{r}
+cor(bs_higher,rate)
+```
+
+
+
+```{r}
+ggplot(df_new, aes(x = no_hs, y = rate)) +
+    geom_point(color = "#edb4e4") + geom_smooth(method = "lm",color="#eb5081") +
+        labs(title = "Education Level vs. Congestive Heart Failure (Less than High School)",
+             x = "% of People Without a High School Diploma",
+             y = "Crude Mortality Rate (per 100,000)") + theme_bw()
+```
+
+
+
+```{r}
+cor(no_hs,rate)
+```
+
+
+
+### Crude Mortality Rate vs. Poverty Level
+
+
+```{r}
+ggplot(df_new, aes(x = poverty, y = rate)) +
+    geom_point(color = "#d1454c") + geom_smooth(method = "lm",color="#78050b") +
+        labs(title = "Poverty vs. Congestive Heart Failure",
+             x = "% of People Living Below the Poverty Line",
+             y = "Crude Mortality Rate (per 100,000)") + theme_bw()
+```
+
+
+
+```{r}
+cor(poverty,rate)
+```
+
+
+
+### Crude Mortality Rate vs. Urbanization Level
+
+
+```{r}
+ggplot(df_new, aes(x=urbanization, y=rate)) + 
+  geom_boxplot(fill = "mistyrose",notch = TRUE, outlier.colour="indianred3",
+                outlier.size=2) +
+        labs(title = "Urbanization Level vs. Congestive Heart Failure",
+             x = "Degree of Urbanization (1 = Most Urban, 9 = Most Rural)",
+             y = "Crude Mortality Rate (per 100,000)") + theme_bw()
+```
+
+
+
+## Linear Regression Model
+
+
+```{r}
+model <- lm(rate ~ income + food_insecure + bs_higher + poverty + urbanization, data = df_new)
+summary(model)
+```
+
+
+### Creating Table Displaying OLS Results
+
+
+```{r}
+ols_table <- tab_model(model, digits = 3, show.ci = F, show.stat = T, show.p = T,
+                              show.se = T, p.style = "stars",
+                              pred.labels = c("(Intercept)", "Median Household Income", "Food Insecurity",
+                                              "Bachelor's Degree or Higher", "Poverty",
+                                              "Urbanization  Level 2", "Urbanization Level 3", 
+                                              "Urbanization Level 4", "Urbanization Level 5", 
+                                              "Urbanization Level 6", "Urbanization Level 7", 
+                                              "Urbanization Level 8", "Urbanization Level 9"),
+                              dv.labels = c(""))
+print(ols_table)
+```
+
