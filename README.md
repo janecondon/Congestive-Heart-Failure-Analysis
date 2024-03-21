@@ -58,7 +58,7 @@ There is a weak positive relationship between food insecurity and crude mortalit
 
 ### Poverty vs. Crude Mortality Rate 
 
-  <img width="600" height="400" src="Plots\Poverty_plot.png">
+  <img width="600" height="400" src="Plots\Poverty_Plot.png">
 
 
 There is a weak positive relationship between poverty and crude mortality rate. Counties with a high rate of poverty generally have a higher crude mortality rate than counties with a low rate of poverty. This means that people living in poverty-stricken areas are more likely to die from congestive heart failure. 
