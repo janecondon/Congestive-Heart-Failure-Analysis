@@ -14,11 +14,11 @@ The data used in this project comes directly from these sources:
 * [Feeding America](https://www.feedingamerica.org/research/map-the-meal-gap/by-county)
 * [U.S. Department of Agriculture](https://www.ers.usda.gov/data-products/county-level-data-sets/county-level-data-sets-download-data/)
 
-#### Congestive Heart Failure (CHF) Crude Mortality Rate 
+### Congestive Heart Failure (CHF) Crude Mortality Rate 
 
 The response variable (CHF crude mortality rate) is measured as follows: Number of CHF-related deaths per 100,000 population per year (in a given county).
 
-#### Variables of Interest
+### Variables of Interest
 
 * **Median Household Income** : The median household income in a county.
 
@@ -58,7 +58,7 @@ There is a weak positive relationship between food insecurity and crude mortalit
 
 ### Poverty vs. Crude Mortality Rate 
 
-  <img width="600" height="400" src="Plots\poverty_plot.png">
+  <img width="600" height="400" src="Plots\Poverty_plot.png">
 
 
 There is a weak positive relationship between poverty and crude mortality rate. Counties with a high rate of poverty generally have a higher crude mortality rate than counties with a low rate of poverty. This means that people living in poverty-stricken areas are more likely to die from congestive heart failure. 
