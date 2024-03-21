@@ -79,6 +79,7 @@ There is clearly a large difference in the crude mortality rate for urban and ru
   
 ## Linear Regression Model
 
+ <img width="600" height="400" src="Plots\Linear_Regression.png">
 
 Based on this model: 
 
